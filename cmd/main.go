@@ -13,7 +13,8 @@ func main() {
 	a.setRouter()
 	a.setRecordingHandlers()
 
-	p := ":8080"
+	// aws eb default
+	p := ":5000"
 
 	fmt.Printf("Portmanteaus started, listening on %s.\n", p)
 

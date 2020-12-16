@@ -3,13 +3,10 @@ phases:
   install:
     runtime-versions:
       golang: 1.14
-  pre_build:
-    commands:
-      - go test ./...
   build:
     commands:
-      - go build -o app ./cmd
+      - go build -o application ./cmd
 artifacts:
   files:
-    - app
+    - application
     - buildspec.yml
