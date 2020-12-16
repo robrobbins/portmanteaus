@@ -11,22 +11,24 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type handlingTestSuite struct {
+// NOTE create suites that are specific to a single, or a series of, tests
+type postPortsSuite struct {
 	suite.Suite
 	context *RecordContext // Client is the repository facade
 }
 
-func (s *handlingTestSuite) SetupSuite() {
-	// NOTE if multiple tests existed in this suite we'd likely use SetupTest
+func (s *postPortsSuite) SetupSuite() {
+	// NOTE SetupTest could be used as a `beforeEach` if needed...
 	s.context = &RecordContext{
 		Router:   httprouter.New(),
 		Recorder: &RecorderMock{},
 	}
-}
 
-func (s *handlingTestSuite) TestPostPortsRoute() {
 	// setup the router
 	AddPackingHandlers(s.context)
+}
+
+func (s *postPortsSuite) TestPostPortsRoute() {
 	// "spy" on the mocked repo facade. we do this to prevent the creation of integration tests.
 	// this is a unit test that is only concerned with the returned http status
 	// NOTE that you have to type assert the actual mock struct in order to assure the /mock package methods
@@ -44,6 +46,6 @@ func (s *handlingTestSuite) TestPostPortsRoute() {
 	// s.T().Log(args[0])
 }
 
-func TestSuite(t *testing.T) {
-	suite.Run(t, new(handlingTestSuite))
+func TestPostPortsSuite(t *testing.T) {
+	suite.Run(t, new(postPortsSuite))
 }

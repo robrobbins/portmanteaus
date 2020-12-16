@@ -57,6 +57,16 @@ func (a *app) setRouter() {
 	})
 }
 
+func (a *app) setStatusHandlers() {
+	if a.router == nil {
+		log.Fatal("router instance is required")
+	}
+
+	rest.AddStatusHandlers(&rest.ReadContext{
+		Router: a.router,
+	})
+}
+
 func (a *app) setRecordingHandlers() {
 	if a.recorder == nil || a.router == nil {
 		log.Fatal("recorder and router instances are required")

@@ -11,6 +11,7 @@ func main() {
 	a.setDynamo()
 	a.setRecorder()
 	a.setRouter()
+	a.setStatusHandlers()
 	a.setRecordingHandlers()
 
 	// aws eb default
