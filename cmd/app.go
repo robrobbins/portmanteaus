@@ -9,14 +9,15 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/julienschmidt/httprouter"
 	"github.com/robrobbins/portmanteaus/pkg/handling/rest"
-	"github.com/robrobbins/portmanteaus/pkg/storing/dynamo"
+	"github.com/robrobbins/portmanteaus/pkg/reading/dynamoreader"
+	"github.com/robrobbins/portmanteaus/pkg/recording/dynamorecorder"
 )
 
 type app struct {
 	router   *httprouter.Router
 	dynamo   *dynamodb.DynamoDB // is safe for concurrent use...
-	reader   *dynamo.ReadClient
-	recorder *dynamo.RecordClient
+	reader   *dynamoreader.Reader
+	recorder *dynamorecorder.Recorder
 }
 
 func (a *app) setDynamo() {
@@ -39,7 +40,7 @@ func (a *app) setRecorder() {
 		log.Fatal("dynamo instance not set")
 	}
 
-	a.recorder = dynamo.NewRecordClient(a.dynamo)
+	a.recorder = dynamorecorder.NewRecorder(a.dynamo)
 }
 
 func (a *app) setRouter() {

@@ -1,4 +1,4 @@
-package dynamo
+package dynamorecorder
 
 import (
 	"testing"
@@ -24,12 +24,12 @@ type testBar struct {
 
 type recordingTestSuite struct {
 	suite.Suite
-	client *RecordClient // Client is the repository facade
+	recorder *Recorder // Client is the repository facade
 }
 
 func (s *recordingTestSuite) SetupSuite() {
 	// NOTE if multiple tests existed in this suite we'd likely use SetupTest
-	s.client = NewRecordClient(&dynamicRecorderMock{})
+	s.recorder = NewRecorder(&dynamicRecorderMock{})
 }
 
 // TestRecord should only test that Record eventually passes the Dynamo Facade's PutItem method the correct input
@@ -38,16 +38,16 @@ func (s *recordingTestSuite) TestRecord() {
 	// NOTE the .Return on the mock.Call allows us to create tests for specific return cases (like error handling)
 	// though we are not using the return here as we only care about the input (or an err)
 	// NOTE we still have to return the proper type...
-	s.client.db.(*dynamicRecorderMock).On("PutItem", mock.Anything).Return(&dynamodb.PutItemOutput{}, nil)
+	s.recorder.db.(*dynamicRecorderMock).On("PutItem", mock.Anything).Return(&dynamodb.PutItemOutput{}, nil)
 
 	// record marshals the input into a map, we'll create our own to compare...
 	d := &testBar{Eggs: 12, Foo: &testFoo{Spam: "spam"}}
 
 	// call the actual client Record method, it will, of course, hit our mock vs actual dynamo
-	assert.Nil(s.T(), s.client.Record(d))
+	assert.Nil(s.T(), s.recorder.Record(d))
 
 	// we can reference what was actually passed thru to the mocked db from Record via:
-	args := s.client.db.(*dynamicRecorderMock).Calls[0].Arguments
+	args := s.recorder.db.(*dynamicRecorderMock).Calls[0].Arguments
 
 	// hand create what that arg should have been...
 	m, _ := dynamodbattribute.MarshalMap(d)

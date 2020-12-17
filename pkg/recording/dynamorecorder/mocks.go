@@ -1,13 +1,9 @@
-package dynamo
+package dynamorecorder
 
 import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/stretchr/testify/mock"
 )
-
-type dynamicReaderMock struct {
-	mock.Mock
-}
 
 type dynamicRecorderMock struct {
 	mock.Mock
