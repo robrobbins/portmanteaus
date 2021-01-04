@@ -1,14 +1,14 @@
 package packing
 
 type Port struct {
-	Maker  string `json:"maker"`
-	First  string `json:"first"`
-	Second string `json:"second"`
-	Result string `json:"result"`
-	Algo   string `json:"algo"` // "rando" || "carrollian"
+	Maker  string
+	First  string
+	Second string
+	Result string
+	Algo   string // "rando" || "carrollian"
 }
 
-func (p *Port) Pack(r Recorder) error {
+func (p *Port) Pack(r PortRecorder) error {
 	// until carrollian algo is implemented, all ports are rando generated
 	// TODO implement carrollian algo
 	if err := randoPack(p); err != nil {
@@ -16,8 +16,8 @@ func (p *Port) Pack(r Recorder) error {
 		return err
 	}
 
-	// with the port made, record this event
-	if err := r.Record(NewEvent(p)); err != nil {
+	// the center passes domain_event, and the data being serialized
+	if err := r.Record(PORT_CREATED, p); err != nil {
 		return err
 	}
 	return nil

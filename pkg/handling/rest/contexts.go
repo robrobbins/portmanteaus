@@ -8,7 +8,7 @@ type ReadContext struct {
 	Router *httprouter.Router
 }
 
-type RecordContext struct {
+type PackingRecordContext struct {
 	Router   *httprouter.Router
-	Recorder Recorder
+	Recorder PackingRecorder
 }

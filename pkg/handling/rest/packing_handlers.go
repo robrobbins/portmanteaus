@@ -10,7 +10,7 @@ import (
 // packing is, hexagonally speaking, the "left" (application) that drives the "center" (domain). In this case, Packing.
 // NOTE the RecordContext is passed from an "initializer". This is either cmd/main or test setup. All *_handlers will
 // accept a context that is defined in rest/interfaces.
-func pack(c *RecordContext) httprouter.Handle {
+func pack(c *PackingRecordContext) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		p := packing.NewPort()
 
@@ -32,6 +32,6 @@ func pack(c *RecordContext) httprouter.Handle {
 	}
 }
 
-func AddPackingHandlers(c *RecordContext) {
+func AddPackingHandlers(c *PackingRecordContext) {
 	c.Router.POST(PORTS_ROUTE, pack(c))
 }

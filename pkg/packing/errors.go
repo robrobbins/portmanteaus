@@ -2,5 +2,5 @@ package packing
 
 import "errors"
 
-var ErrFirstRequired = errors.New("source word First is required")
-var ErrSecondRequired = errors.New("source word Second is required")
+var errFirstRequired = errors.New("source word First is required")
+var errSecondRequired = errors.New("source word Second is required")

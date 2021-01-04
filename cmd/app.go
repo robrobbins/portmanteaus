@@ -1,46 +1,18 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/julienschmidt/httprouter"
 	"github.com/robrobbins/portmanteaus/pkg/handling/rest"
-	"github.com/robrobbins/portmanteaus/pkg/reading/dynamoreader"
-	"github.com/robrobbins/portmanteaus/pkg/recording/dynamorecorder"
+	"github.com/robrobbins/portmanteaus/pkg/recording/pgrecorder"
 )
 
 type app struct {
-	router   *httprouter.Router
-	dynamo   *dynamodb.DynamoDB // is safe for concurrent use...
-	reader   *dynamoreader.Reader
-	recorder *dynamorecorder.Recorder
-}
-
-func (a *app) setDynamo() {
-	// establish an aws session, assume credential file...
-	// TODO why won't aws find the region in a config file?
-	s, err := session.NewSession(&aws.Config{Region: aws.String("us-west-1")})
-
-	if err != nil {
-		log.Fatalf("error creating aws session: %v", err)
-	}
-
-	// get a dynamo client instance and retain a reference on the app
-	a.dynamo = dynamodb.New(s)
-}
-
-func (a *app) setReader() {}
-
-func (a *app) setRecorder() {
-	if a.dynamo == nil {
-		log.Fatal("dynamo instance not set")
-	}
-
-	a.recorder = dynamorecorder.NewRecorder(a.dynamo)
+	router *httprouter.Router
+	db     *sql.DB // long-lived database facade (not an actual connection)
 }
 
 func (a *app) setRouter() {
@@ -68,14 +40,14 @@ func (a *app) setStatusHandlers() {
 	})
 }
 
-func (a *app) setRecordingHandlers() {
-	if a.recorder == nil || a.router == nil {
-		log.Fatal("recorder and router instances are required")
+func (a *app) setPackingHandlers() {
+	if a.router == nil {
+		log.Fatal("router instance is required")
 	}
 
 	// "Packing" as Humpty Dumpty said to Alice, "... there are two meanings packed up into one word."
-	rest.AddPackingHandlers(&rest.RecordContext{
+	rest.AddPackingHandlers(&rest.PackingRecordContext{
 		Router:   a.router,
-		Recorder: a.recorder,
+		Recorder: pgrecorder.NewPackingRecorder(a.db), // AddPackingHandlers explicitly asks for a PackingRecorder via context
 	})
 }

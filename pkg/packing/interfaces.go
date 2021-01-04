@@ -1,11 +1,11 @@
 package packing
 
 type Packable interface {
-	Pack(Recorder) error
+	Pack(PortRecorder) error
 }
 
-type Recorder interface {
-	Record(interface{}) error
+type PortRecorder interface {
+	Record(string, *Port) error
 }
 
 type PackableFactory func() Packable

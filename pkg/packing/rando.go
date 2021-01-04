@@ -14,7 +14,7 @@ func randoPack(p *Port) error {
 
 	if lenf == 0 {
 		// TODO logging on err
-		return ErrFirstRequired
+		return errFirstRequired
 	}
 
 	fi := rand.Intn(lenf - 1)
@@ -22,7 +22,7 @@ func randoPack(p *Port) error {
 	lens := len(p.Second)
 
 	if lens == 0 {
-		return ErrSecondRequired
+		return errSecondRequired
 	}
 
 	si := rand.Intn(lens - 1)

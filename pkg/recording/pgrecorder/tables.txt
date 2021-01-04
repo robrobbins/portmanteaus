@@ -1,0 +1,8 @@
+Simple reference for the tables present:
+
+table events:
+  sequence serial primary key
+  name varchar(100)
+  version smallint
+  created int (2038 is going to end the computing world anyway)
+  data jsonb not null
